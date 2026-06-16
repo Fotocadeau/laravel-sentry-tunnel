@@ -2,11 +2,13 @@
 
 namespace SentryTunnel\Http\Controller;
 
-use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
+
+use Throwable;
 
 use function Safe\json_decode;
 use function Safe\parse_url;
@@ -21,17 +23,23 @@ class SentryTunnel extends Controller
      */
     public function tunnel(Request $request): Response
     {
-        $envelope = $request->getContent();
-        $pieces = explode("\n", $envelope, 2);
-        $header = json_decode($pieces[0], true, flags: JSON_THROW_ON_ERROR);
+        try {
+            $envelope = $request->getContent();
+            $pieces = explode("\n", $envelope, 2);
+            $header = json_decode($pieces[0], true, flags: JSON_THROW_ON_ERROR);
 
-        [$user, $host, $projectId] = $this->parseDsn($header);
+            [$user, $host, $projectId] = $this->parseDsn($header);
 
-        $this->checkProjectId($projectId);
+            $this->checkProjectId($projectId);
 
-        return Http::withBody($envelope, 'application/x-sentry-envelope')
-            ->post("https://$host/api/$projectId/envelope/?sentry_key=$user")
-            ->throw();
+            Http::withBody($envelope, 'application/x-sentry-envelope')
+                ->post("https://$host/api/$projectId/envelope/?sentry_key=$user")
+                ->throw();
+        } catch (Throwable $e) {
+            report($e);
+        } finally {
+            return response(null, 204);
+        }
     }
 
     /**
@@ -43,7 +51,7 @@ class SentryTunnel extends Controller
 
         abort_if(($user = parse_url($dsn, PHP_URL_USER)) === null, 401, 'no user');
         abort_if(($host = parse_url($dsn, PHP_URL_HOST)) === null, 401, 'no host');
-        abort_if(! in_array($host, $this->allowedHosts(), true), 401, 'invalid host');
+        abort_if(!in_array($host, $this->allowedHosts(), true), 401, 'invalid host');
 
         $path = trim(parse_url($dsn, PHP_URL_PATH), '/');
         abort_if(($projectId = intval($path)) === 0, 422, 'no project');
@@ -76,6 +84,6 @@ class SentryTunnel extends Controller
     {
         $allowedProjects = $this->allowedProjects();
 
-        abort_if(count($allowedProjects) > 0 && ! in_array($projectId, $allowedProjects, true), 401, 'invalid project');
+        abort_if(count($allowedProjects) > 0 && !in_array($projectId, $allowedProjects, true), 401, 'invalid project');
     }
 }

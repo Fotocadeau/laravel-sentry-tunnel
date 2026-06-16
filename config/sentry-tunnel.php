@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'allowed-hosts' => explode(',', env('SENTRY_TUNNEL_ALLOWED_HOSTS', (string) Str::of(env('SENTRY_LARAVEL_DSN'))->after('@')->before('/'))),
+    'allowed-hosts' => explode(',', env('SENTRY_TUNNEL_ALLOWED_HOSTS', (string)Str::of(env('SENTRY_LARAVEL_DSN'))->after('@')->before('/'))),
 
     /*
     |--------------------------------------------------------------------------
@@ -26,7 +26,7 @@ return [
     | comma-separated list of project IDs.
     */
 
-    'allowed-projects' => explode(',', env('SENTRY_TUNNEL_ALLOWED_PROJECTS', (string) Str::of(env('SENTRY_LARAVEL_DSN'))->afterLast('/'))),
+    'allowed-projects' => explode(',', env('SENTRY_TUNNEL_ALLOWED_PROJECTS', (string)Str::of(env('SENTRY_LARAVEL_DSN'))->afterLast('/'))),
 
     /*
     |--------------------------------------------------------------------------
@@ -51,7 +51,7 @@ return [
     |
     */
 
-    'tunnel-url' => env('SENTRY_TUNNEL_URL', '/sentry/tunnel'),
+    'tunnel-url' => env('SENTRY_TUNNEL_URL', '_tunnel'),
 
     /*
     |--------------------------------------------------------------------------

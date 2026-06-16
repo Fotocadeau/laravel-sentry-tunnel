@@ -10,3 +10,5 @@ parameters:
     inferPrivatePropertyTypeFromConstructor: true
     level: 5
     ignoreErrors:
+        - identifier: larastan.noEnvCallsOutsideOfConfig
+          path: config/*
