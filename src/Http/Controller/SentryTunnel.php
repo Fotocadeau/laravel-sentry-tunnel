@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 
+use Safe\Exceptions\UrlException;
 use Throwable;
 
 use function Safe\json_decode;
@@ -33,6 +34,8 @@ class SentryTunnel extends Controller
             $this->checkProjectId($projectId);
 
             Http::withBody($envelope, 'application/x-sentry-envelope')
+                ->connectTimeout(2)
+                ->timeout(30)
                 ->post("https://$host/api/$projectId/envelope/?sentry_key=$user")
                 ->throw();
         } catch (Throwable $e) {
@@ -44,16 +47,20 @@ class SentryTunnel extends Controller
 
     /**
      * parse the dsn will all controls.
+     *
+     * @throws UrlException
      */
     private function parseDsn(mixed $header): array
     {
         abort_if(($dsn = data_get($header, 'dsn')) === null, 422, 'no dsn');
 
-        abort_if(($user = parse_url($dsn, PHP_URL_USER)) === null, 401, 'no user');
-        abort_if(($host = parse_url($dsn, PHP_URL_HOST)) === null, 401, 'no host');
+        $parts = parse_url($dsn);
+
+        abort_if(($user = $parts[PHP_URL_USER]) === null, 401, 'no user');
+        abort_if(($host = $parts[PHP_URL_HOST]) === null, 401, 'no host');
         abort_if(!in_array($host, $this->allowedHosts(), true), 401, 'invalid host');
 
-        $path = trim(parse_url($dsn, PHP_URL_PATH), '/');
+        $path = trim($parts[PHP_URL_PATH], '/');
         abort_if(($projectId = intval($path)) === 0, 422, 'no project');
 
         return [$user, $host, $projectId];
