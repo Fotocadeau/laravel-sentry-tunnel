@@ -2,17 +2,10 @@
 
 This package provides a URL for use with the [`tunnel`-option](https://docs.sentry.io/platforms/javascript/troubleshooting/#using-the-tunnel-option) of the Sentry SDK.
 
-[![Latest Version](https://img.shields.io/packagist/v/asbiin/laravel-sentry-tunnel?style=flat-square&label=Latest%20Version)](https://github.com/asbiin/laravel-sentry-tunnel/releases)
-[![Downloads](https://img.shields.io/packagist/dt/asbiin/laravel-sentry-tunnel?style=flat-square&label=Downloads)](https://packagist.org/packages/asbiin/laravel-sentry-tunnel)
-[![Workflow Status](https://img.shields.io/github/actions/workflow/status/asbiin/laravel-sentry-tunnel/tests.yml?branch=main&style=flat-square&label=Workflow%20Status)](https://github.com/asbiin/laravel-sentry-tunnel/actions?query=branch%3Amain)
-[![Quality Gate](https://img.shields.io/sonar/quality_gate/asbiin_laravel-sentry-tunnel?server=https%3A%2F%2Fsonarcloud.io&style=flat-square&label=Quality%20Gate)](https://sonarcloud.io/dashboard?id=asbiin_laravel-sentry-tunnel)
-[![Coverage Status](https://img.shields.io/sonar/coverage/asbiin_laravel-sentry-tunnel?server=https%3A%2F%2Fsonarcloud.io&style=flat-square&label=Coverage%20Status)](https://sonarcloud.io/dashboard?id=asbiin_laravel-sentry-tunnel)
-
-
 # Installation
 
 ```shell
-composer require asbiin/laravel-sentry-tunnel
+composer require fotocadeau/laravel-sentry-tunnel
 ```
 
 ## Configuration
@@ -62,21 +55,21 @@ _example_:
 
 ```js
 const myTransport = (options) => {
-  const makeRequest = async (request) => {
-    const requestOptions = {
-      data: request.body,
-      url: options.url,
-      method: 'POST',
-      referrerPolicy: 'origin',
-      headers: options.headers,
-      ...options.fetchOptions,
+    const makeRequest = async (request) => {
+        const requestOptions = {
+            data: request.body,
+            url: options.url,
+            method: 'POST',
+            referrerPolicy: 'origin',
+            headers: options.headers,
+            ...options.fetchOptions,
+        };
+        return axios(requestOptions).then((response) => ({
+            statusCode: response.status,
+            headers: response.headers,
+        }));
     };
-    return axios(requestOptions).then((response) => ({
-      statusCode: response.status,
-      headers: response.headers,
-    }));
-  };
-  return createTransport({ bufferSize: options.bufferSize }, makeRequest);
+    return createTransport({bufferSize: options.bufferSize}, makeRequest);
 };
 
 Sentry.init({
@@ -97,16 +90,10 @@ SENTRY_TUNNEL_URL="/super/secret/tunnel"
 
 Consult [Sentry's documentation](https://docs.sentry.io/platforms/javascript/troubleshooting/#using-the-tunnel-option).
 
-
 # Citations
 
-This package has been forked from [naugrim/laravel-sentry-tunnel](https://github.com/Naugrimm/laravel-sentry-tunnel), with some slight changes.
-
+Forked from [asbiin/laravel-sentry-tunnel](https://github.com/asbiin/laravel-sentry-tunnel) to not throw errors from Sentry back to the frontend.
 
 # License
-
-Author: [Alexis Saettler](https://github.com/asbiin)
-
-Copyright © 2024.
 
 Licensed under the MIT License. [View license](/LICENSE.md).

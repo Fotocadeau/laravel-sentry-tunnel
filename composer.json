@@ -1,5 +1,5 @@
 {
-    "name": "asbiin/laravel-sentry-tunnel",
+    "name": "fotocadeau/laravel-sentry-tunnel",
     "description": "Provides an endpoint to use the `tunnel`-parameter of the Sentry SDK",
     "keywords": [
         "laravel",
@@ -10,8 +10,8 @@
     "type": "library",
     "license": "MIT",
     "support": {
-        "issues": "https://github.com/asbiin/laravel-sentry-tunnel/issues",
-        "source": "https://github.com/asbiin/laravel-sentry-tunnel"
+        "issues": "https://github.com/fotocadeau/laravel-sentry-tunnel/issues",
+        "source": "https://github.com/fotocadeau/laravel-sentry-tunnel"
     },
     "authors": [
         {
