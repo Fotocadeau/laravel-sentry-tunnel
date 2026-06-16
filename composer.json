@@ -37,6 +37,9 @@
         "psalm/plugin-laravel": "^2.0 || ^3.0 || ^4.0",
         "thecodingmachine/phpstan-safe-rule": "^1.2"
     },
+    "replace": {
+        "asbiin/laravel-sentry-tunnel": "*"
+    },
     "autoload": {
         "psr-4": {
             "SentryTunnel\\": "src/"
