@@ -56,11 +56,11 @@ class SentryTunnel extends Controller
 
         $parts = parse_url($dsn);
 
-        abort_if(($user = $parts[PHP_URL_USER]) === null, 401, 'no user');
-        abort_if(($host = $parts[PHP_URL_HOST]) === null, 401, 'no host');
+        abort_if(($user = $parts['user'] ?? null) === null, 401, 'no user');
+        abort_if(($host = $parts['host'] ?? null) === null, 401, 'no host');
         abort_if(!in_array($host, $this->allowedHosts(), true), 401, 'invalid host');
 
-        $path = trim($parts[PHP_URL_PATH], '/');
+        $path = trim($parts['path'] ?? '', '/');
         abort_if(($projectId = intval($path)) === 0, 422, 'no project');
 
         return [$user, $host, $projectId];
